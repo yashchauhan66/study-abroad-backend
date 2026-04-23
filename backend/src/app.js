@@ -1,6 +1,7 @@
 ﻿const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 
 const applicationRoutes = require("./routes/applicationRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -14,7 +15,14 @@ const notFound = require("./middleware/notFound");
 
 const app = express();
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  message: "Too many requests, please try again later.",
+});
+
 app.use(cors());
+app.use(limiter);
 app.use(express.json());
 app.use(morgan("dev"));
 

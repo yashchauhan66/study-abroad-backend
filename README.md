@@ -1,132 +1,164 @@
-- Study Abroad Backend API
+# Study Abroad Platform API
 
-A backend system built for a study abroad platform where students can explore universities, apply to programs, and track their application journey.
+A full-stack project for a study-abroad platform where students can discover universities, get recommendations, apply to programs, and track application status.
 
-This project is built using Node.js, Express, and MongoDB with JWT authentication and a simple recommendation system.
+This repository contains:
+- `backend`: Node.js + Express + MongoDB API
+- `frontend`: React + Vite client
 
-- Features
+## Features
 
-- Authentication
+- **JWT Authentication**
+  - Register and login
+  - Protected routes with token validation
+  - Password hashing with `bcryptjs`
 
+- **University Discovery**
+  - List universities
+  - Filtering, pagination, and sorting
+  - Popular universities endpoint
 
-User registration
-User login
-JWT-based protected routes
-Password hashing using bcrypt
-🎓 University Discovery
-Get all universities
-Filter by country and field
-Pagination support
-Sorting support (name, tuition)
+- **Recommendation System**
+  - MongoDB aggregation based scoring
+  - Country, field, budget, intake, and IELTS score matching
 
+- **Application Workflow**
+  - Apply to a program
+  - Duplicate application prevention
+  - Status transitions with timeline tracking
 
-- Recommendation System
+- **Rate Limiting (Implemented)**
+  - Global API protection via `express-rate-limit`
+  - Current config: max `100` requests per `15 minutes` per IP
 
-Suggest universities based on:
-Preferred country
-Budget
-Field of study
-Uses MongoDB aggregation pipeline
+- **Testing**
+  - Beginner-friendly API tests using `Jest` + `Supertest`
 
+- **Dockerized Deployment**
+  - Dockerfiles for frontend and backend
+  - `docker-compose.yml` with frontend + backend + MongoDB
 
-- Application System
+## Tech Stack
 
-Apply to programs
-Prevent duplicate applications
-Application status tracking:
-Applied → Reviewed → Accepted / Rejected
-Status history maintained
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- React + Vite
+- JWT
+- Jest + Supertest
+- Docker + Docker Compose
 
+## Project Structure
 
-- Performance
+```text
+.
+|-- backend
+|   |-- src
+|   |   |-- config
+|   |   |-- controllers
+|   |   |-- middleware
+|   |   |-- models
+|   |   |-- routes
+|   |   |-- services
+|   |   `-- utils
+|   |-- tests
+|   `-- Dockerfile
+|-- frontend
+|   |-- src
+|   |-- nginx.conf
+|   `-- Dockerfile
+`-- docker-compose.yml
+```
 
-Basic indexing on important fields
-Optimized queries for filtering and search
+## Local Setup (Without Docker)
 
+### 1) Backend
 
-- Testing
-
-Basic API testing using Jest & Supertest
-
-
-- Tech Stack
-
-Node.js
-Express.js
-MongoDB + Mongoose
-JWT (Authentication)
-bcrypt (Password hashing)
-
-
-Jest (Testing)
-
- Project Structure
-backend/
-│
-├── models/
-├── controllers/
-├── routes/
-├── middleware/
-├── config/
-├── tests/
-├── app.js
-└── server.js
- Setup Instructions
-1. Clone the repository
-git clone <your-repo-link>
+```bash
 cd backend
-2. Install dependencies
 npm install
-3. Create .env file
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
+```
+
+Create `.env` in `backend`:
+
+```env
+PORT=4000
+MONGODB_URI=your MONGO_URI
 JWT_SECRET=your_secret_key
-4. Run the server
+JWT_EXPIRES_IN=1d
+CACHE_TTL_SECONDS=300
+```
+
+Run backend:
+
+```bash
 npm run dev
+```
 
-Server will run on:
+### 2) Frontend
 
-http://localhost:5000
- API Endpoints
-Auth Routes
-POST /api/auth/register
-POST /api/auth/login
-GET  /api/auth/profile
-University Routes
-GET /api/universities
-GET /api/universities?country=USA&field=CS&page=1&limit=10
-Application Routes
-POST /api/applications/apply
-GET  /api/applications
-PATCH /api/applications/:id/status
-Recommendation
-GET /api/recommendations
- Assumptions
-IELTS score is optional for recommendation logic
-Recommendation system is basic (rule + aggregation based)
-Only backend APIs are focused (frontend not included in logic)
- Architecture Decisions
-Used MVC pattern for simplicity
-Kept controllers lightweight
-Business logic separated from routes
-MongoDB aggregation used for recommendation
-JWT used for stateless authentication
- Testing
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-Run tests using:
+## Docker Setup (Frontend + Backend + MongoDB)
 
+Make sure Docker Desktop is running, then from project root:
+
+```bash
+docker compose up --build -d
+```
+
+Useful commands:
+
+```bash
+docker compose logs -f
+docker compose down
+docker compose down -v
+```
+
+Service URLs:
+- Frontend: `http://localhost:8081`
+- Backend: `http://localhost:4000`
+- MongoDB: `mongodb://localhost:27017`
+
+## API Endpoints (Core)
+
+- **Auth**
+  - `POST /api/auth/register`
+  - `POST /api/auth/login`
+  - `GET /api/auth/me`
+
+- **Universities**
+  - `GET /api/universities`
+  - `GET /api/universities/popular`
+
+- **Applications**
+  - `POST /api/applications`
+  - `GET /api/applications`
+  - `PATCH /api/applications/:id/status`
+
+- **Recommendations**
+  - `GET /api/recommendations/:studentId`
+
+## Testing
+
+From `backend`:
+
+```bash
 npm test
- Future Improvements
-Add Redis caching
-Add rate limiting for security
-Improve recommendation with AI/ML scoring
-Add Docker support
-Add email notifications for applications
- Author
+```
 
-Yash Chauhan
- Email: yashchauhan6660@gmail.com
+## Notes
 
- Phone: 9389507913
- Portfolio: https://portfolio-two-orpin-43.vercel.app/
- GitHub: https://github.com/yashchauhan66
+- Rate limiting is enabled globally in `backend/src/app.js`.
+- Recommendation logic uses MongoDB aggregation for better performance and scoring flexibility.
+
+## Author
+
+- Yash Chauhan
+- Email: `yashchauhan6660@gmail.com`
+- Portfolio: [https://portfolio-two-orpin-43.vercel.app/](https://portfolio-two-orpin-43.vercel.app/)
+- GitHub: [https://github.com/yashchauhan66](https://github.com/yashchauhan66)
