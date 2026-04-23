@@ -1,4 +1,4 @@
-﻿const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const env = require("../config/env");
 const Student = require("../models/Student");
@@ -16,7 +16,7 @@ const requireAuth = asyncHandler(async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, env.jwtSecret);
-    const student = await Student.findById(decoded.sub).select("-password");
+    const student = await Student.findById(decoded.id).select("-password");
 
     if (!student) {
       throw new HttpError(401, "Authenticated user no longer exists.");
@@ -28,6 +28,7 @@ const requireAuth = asyncHandler(async (req, res, next) => {
     throw new HttpError(401, "Invalid or expired token.");
   }
 });
+
 
 module.exports = {
   requireAuth,

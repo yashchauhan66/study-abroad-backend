@@ -1,4 +1,4 @@
-﻿const express = require("express");
+const express = require("express");
 
 const {
   createApplication,
@@ -6,10 +6,15 @@ const {
   updateApplicationStatus,
 } = require("../controllers/applicationController");
 
+const { requireAuth } = require("../middleware/auth");
+
 const router = express.Router();
+
+router.use(requireAuth);
 
 router.get("/", listApplications);
 router.post("/", createApplication);
 router.patch("/:id/status", updateApplicationStatus);
+
 
 module.exports = router;
